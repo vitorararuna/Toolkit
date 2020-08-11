@@ -1,18 +1,17 @@
-import { call, takeEvery, put} from "redux-saga/effects";
+import { call, takeLatest, takeEvery, put, all } from "redux-saga/effects";
 import api from '../../services/api';
-import { setProducts } from './slice';
-import { SET_PRODUCT_REQUEST } from '../../constants/sagaActions';
-
+import { setProducts, setProductsRequest } from './slice';
 
 
 function* setProductRequest() {
+    console.log("saga")
     const prod = yield call(api.get, `/products`);
-
-    yield put(setProducts(prod));
+    console.log(prod);
+    yield put(setProducts(prod.data));
 }
 
 
 
-export default function* rootSaga() {
-    yield takeEvery(SET_PRODUCT_REQUEST, setProductRequest);
-}
+export default all([
+    takeEvery(setProductsRequest.type, setProductRequest)
+]);
